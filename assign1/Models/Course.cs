@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApplication.Models
 {
@@ -9,5 +11,6 @@ namespace WebApplication.Models
     public int ID { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public List<Student> Students { get; set; }
   }
 }

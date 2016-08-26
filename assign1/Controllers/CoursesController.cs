@@ -9,6 +9,7 @@ namespace WebApplication.Controllers
   public class CoursesController : Controller
   {
     private static List<Course> _courses;
+    private static List<Student> _students;
 
     public CoursesController()
     {
@@ -23,6 +24,16 @@ namespace WebApplication.Controllers
             ID = 1,
             StartDate = new DateTime(2016,08,25),
             EndDate = new DateTime(2016,11,29),
+            Students = new List<Student>{
+              new Student{
+                SSN = "3008942249",
+                Name = "Janus"
+              },
+              new Student{
+                SSN = "1209953279",
+                Name = "Steinn"
+              }
+            }
           },
           new Course
           {
@@ -31,6 +42,33 @@ namespace WebApplication.Controllers
             ID = 2,
             StartDate = new DateTime(2016,08,25),
             EndDate = new DateTime(2016,11,29),
+            Students = new List<Student>{
+              new Student{
+                SSN = "3008942249",
+                Name = "Janus"
+              },
+              new Student{
+                SSN = "1209953279",
+                Name = "Steinn"
+              }
+            }
+          }
+        };
+      }
+      if ( _courses == null )
+      {
+        _students = new List<Student>{
+          new Student{
+            SSN = "3008942249",
+            Name = "Janus"
+          },
+          new Student{
+            SSN = "1209953279",
+            Name = "Steinn"
+          },
+          new Student{
+            SSN = "1702931269",
+            Name = "Sigurður"
           }
         };
       }
@@ -181,6 +219,41 @@ namespace WebApplication.Controllers
       }
       var location = Url.Link("GetCourse", new { ID = CourseID });
       return Ok(location);
+    }
+
+    [HttpPost]
+    [Route("/api/courses/addstudent")]
+    public IActionResult AddStudent (string ID,
+                                     string ISSN,
+                                     string IName)
+    {
+      int CourseID = Int32.Parse(ID);
+
+      Course TempCourse = _courses.FirstOrDefault(x => x.ID == CourseID);
+      if(TempCourse == null){
+        return NotFound("Given Coruse Not Found");
+      }
+      else{
+        TempCourse.Students.Add(new Student{SSN = ISSN, Name = IName});
+        return Ok();
+      }
+    }
+
+
+
+    [HttpGet]
+    [Route("api/courses/students/{ID:int}")]
+    public IActionResult GetCourseStudents(string ID)
+    {
+      int CourseID = Int32.Parse(ID);
+      Course TempCourse = _courses.FirstOrDefault(x => x.ID == CourseID);
+      if(TempCourse == null){
+        return NotFound();
+      }
+      else{
+        return Ok(TempCourse.Students);
+      }
+
     }
   }
 }
