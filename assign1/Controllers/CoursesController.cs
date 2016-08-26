@@ -54,9 +54,9 @@ namespace WebApplication.Controllers
       int CourseID;
       try
       {
-         CourseID = Int32.Parse(ID);
+        CourseID = Int32.Parse(ID);
       } catch (FormatException) {
-        return BadRequest();
+        return NotFound();
       }
       var ReturnCourse = _courses.FirstOrDefault(i => i.ID == CourseID);
       if (ReturnCourse == null) {
@@ -108,6 +108,78 @@ namespace WebApplication.Controllers
       _courses.Add(NewCourse);
       var location = Url.Link("GetCourse", new { ID = newCourseID });
       return Created(location, NewCourse);
+    }
+    
+    [HttpDelete]
+    [Route("/api/courses/{ID:int}")]
+    public IActionResult DeleteCourse(int ID)
+    {
+      int result = _courses.RemoveAll(x => x.ID == ID);
+      if (result == 0)
+      {
+        return NotFound();
+      }
+      return NoContent();
+    }
+
+    [HttpPut]
+    [Route("/api/courses/")]
+    public IActionResult UpdateCourse (string Name,
+                                       string TemplateID,
+                                       string StartDate,
+                                       string EndDate,
+                                       string ID
+                                      )
+    {
+      if (ID == null)
+      {
+        return BadRequest("To modify a course the course ID must be specified");
+      }
+      int CourseID;
+      try
+      {
+        CourseID = Int32.Parse(ID);
+      } catch (FormatException) {
+        return NotFound();
+      }
+      var Course = _courses.FirstOrDefault(x => x.ID == CourseID);
+      if (Course == null)
+      {
+        return NotFound();
+      }
+      if (Name != null)
+      {
+        Course.Name = Name;
+      }
+      if (TemplateID != null)
+      {
+        Course.TemplateID = TemplateID;
+      }
+      if (StartDate != null)
+      {
+        DateTime StartTime;
+        try
+        {
+          StartTime = DateTime.Parse(StartDate);
+        } catch (FormatException) {
+          string returnMessage = "The StartDate parameter is not of a valid DateTime format";
+          return BadRequest(returnMessage);
+        }
+        Course.StartDate = StartTime;
+      }
+      if (EndDate != null)
+      {
+        DateTime EndTime;
+        try
+        {
+          EndTime = DateTime.Parse(EndDate);
+        } catch (FormatException) {
+          string returnMessage = "The EndDate parameter is not of a valid DateTime format";
+          return BadRequest(returnMessage);
+        }
+        Course.EndDate = EndTime;
+      }
+      return Ok();
     }
   }
 }
