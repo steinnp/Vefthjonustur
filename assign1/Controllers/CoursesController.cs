@@ -179,7 +179,8 @@ namespace WebApplication.Controllers
         }
         Course.EndDate = EndTime;
       }
-      return Ok();
+      var location = Url.Link("GetCourse", new { ID = CourseID });
+      return Ok(location);
     }
   }
 }
