@@ -105,47 +105,23 @@ namespace WebApplication.Controllers
 
     [HttpPost]
     [Route("/api/courses")]
-    public IActionResult AddCourse  (string Name,
-                                     string TemplateID,
-                                     string StartDate,
-                                     string EndDate
-                                    )
+    public IActionResult AddCourse ([FromBody]Course newCourse)
     {
-      if (Name == null || Name.GetType() != typeof(string) || TemplateID == null || StartDate == null || EndDate == null)
+      if (newCourse.Name == null ||
+          newCourse.TemplateID == null ||
+          newCourse.StartDate == null ||
+          newCourse.EndDate == null)
       {
         string returnMessage = 
           "To add a course you must specify the following parameters:" +
           "Name, TemplateID, StartDate, EndDate";
         return BadRequest(returnMessage);
       }
-      DateTime StartTime;
-      DateTime EndTime;
-      try
-      {
-        StartTime = DateTime.Parse(StartDate);
-      } catch (FormatException) {
-        string returnMessage = "The StartDate parameter is not of a valid DateTime format";
-        return BadRequest(returnMessage);
-      }
-      try
-      {
-        EndTime = DateTime.Parse(EndDate);
-      } catch (FormatException) {
-        string returnMessage = "The EndDate parameter is not of a valid DateTime format";
-        return BadRequest(returnMessage);
-      }
       int newCourseID = _courses.Count() + 1;
-      Course NewCourse = new Course
-                         {
-                           Name = Name,
-                           TemplateID = TemplateID,
-                           ID = newCourseID,
-                           StartDate = StartTime,
-                           EndDate = EndTime,
-                         };
-      _courses.Add(NewCourse);
+      newCourse.ID = newCourseID;
+      _courses.Add(newCourse);
       var location = Url.Link("GetCourse", new { ID = newCourseID });
-      return Created(location, NewCourse);
+      return Created(location, newCourse);
     }
     
     [HttpDelete]
@@ -162,87 +138,56 @@ namespace WebApplication.Controllers
 
     [HttpPut]
     [Route("/api/courses/")]
-    public IActionResult UpdateCourse (string Name,
-                                       string TemplateID,
-                                       string StartDate,
-                                       string EndDate,
-                                       string ID
-                                      )
+    public IActionResult UpdateCourse ([FromBody]Course updateCourse)
     {
-      if (ID == null)
-      {
-        return BadRequest("To modify a course the course ID must be specified");
-      }
-      int CourseID;
-      try
-      {
-        CourseID = Int32.Parse(ID);
-      } catch (FormatException) {
-        return NotFound();
-      }
-      var Course = _courses.FirstOrDefault(x => x.ID == CourseID);
+      var Course = _courses.FirstOrDefault(x => x.ID == updateCourse.ID);
       if (Course == null)
       {
-        return NotFound();
+        string returnMessage = "Either the course ID was not specified or the course with"
+                             + " the given ID could not be found.";
+        return NotFound(returnMessage);
       }
-      if (Name != null)
+      if (updateCourse.Name != null)
       {
-        Course.Name = Name;
+        Course.Name = updateCourse.Name;
       }
-      if (TemplateID != null)
+      if (updateCourse.TemplateID != null)
       {
-        Course.TemplateID = TemplateID;
+        Course.TemplateID = updateCourse.TemplateID;
       }
-      if (StartDate != null)
+      if (updateCourse.StartDate != null)
       {
-        DateTime StartTime;
-        try
-        {
-          StartTime = DateTime.Parse(StartDate);
-        } catch (FormatException) {
-          string returnMessage = "The StartDate parameter is not of a valid DateTime format";
-          return BadRequest(returnMessage);
-        }
-        Course.StartDate = StartTime;
+        Course.StartDate = updateCourse.StartDate;
       }
-      if (EndDate != null)
+      if (updateCourse.EndDate != null)
       {
-        DateTime EndTime;
-        try
-        {
-          EndTime = DateTime.Parse(EndDate);
-        } catch (FormatException) {
-          string returnMessage = "The EndDate parameter is not of a valid DateTime format";
-          return BadRequest(returnMessage);
-        }
-        Course.EndDate = EndTime;
+        Course.EndDate = updateCourse.EndDate;
       }
-      var location = Url.Link("GetCourse", new { ID = CourseID });
+      var location = Url.Link("GetCourse", new { ID = updateCourse.ID });
       return Ok(location);
     }
 
     [HttpPost]
-    [Route("/api/courses/addstudent")]
-    public IActionResult AddStudent (string ID,
-                                     string ISSN,
-                                     string IName)
+    [Route("/api/courses/{ID:int}/addStudent")]
+    public IActionResult AddStudent (string ID, [FromBody]Student newStudent)
     {
       int CourseID = Int32.Parse(ID);
 
       Course TempCourse = _courses.FirstOrDefault(x => x.ID == CourseID);
       if(TempCourse == null){
-        return NotFound("Given Coruse Not Found");
+        return NotFound("Given Course Not Found");
       }
       else{
-        TempCourse.Students.Add(new Student{SSN = ISSN, Name = IName});
-        return Ok();
+        TempCourse.Students.Add(newStudent);
+        var location = Url.Link("GetCourseStudents", new { ID = CourseID });
+        return Created(location, newStudent);
       }
     }
 
 
 
     [HttpGet]
-    [Route("api/courses/students/{ID:int}")]
+    [Route("api/courses/students/{ID:int}", Name="GetCourseStudents")]
     public IActionResult GetCourseStudents(string ID)
     {
       int CourseID = Int32.Parse(ID);
