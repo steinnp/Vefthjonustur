@@ -40,6 +40,9 @@
     },
     "Models": {
       "target": "project"
+    },
+    "Services" : {
+      "target": "project"
     }
   },
 
