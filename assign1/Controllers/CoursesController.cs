@@ -107,6 +107,8 @@ namespace WebApplication.Controllers
     [Route("/api/courses")]
     public IActionResult AddCourse ([FromBody]Course newCourse)
     {
+      Console.Write(newCourse);
+      Console.Write("THISTISTAST \n ASTATEQTE \nAFAEGAEGE");
       if (newCourse.Name == null ||
           newCourse.TemplateID == null ||
           newCourse.StartDate == null ||
@@ -116,6 +118,9 @@ namespace WebApplication.Controllers
           "To add a course you must specify the following parameters:" +
           "Name, TemplateID, StartDate, EndDate";
         return BadRequest(returnMessage);
+      }
+      if (newCourse.StartDate.GetType() != typeof(DateTime)) {
+        return BadRequest();
       }
       int newCourseID = _courses.Count() + 1;
       newCourse.ID = newCourseID;
