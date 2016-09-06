@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Assign2.Models;
 using Assign2.Services.Entities;
+using Assign2.Services.Exceptions;
 
 namespace Assign2.Services
 {
@@ -31,6 +32,10 @@ namespace Assign2.Services
                     Name = ct.Name,
                     Semester = c.Semester
                 }).ToList();
+            if (coursesInSemester.Count() == 0)
+            {
+                throw new AppObjectNotFoundException();
+            }
             return coursesInSemester;
         }
     }
