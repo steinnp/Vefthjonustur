@@ -120,3 +120,6 @@
 /Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/CoursesService.cs
 /Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/ICoursesService.cs
 /Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/Entities/Course.cs
+/Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/Entities/CourseTemplate.cs
+/Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/Entities/Student.cs
+/Users/steinn/Documents/tolHR2016haust/T-514-Veft/Assign2/Services/Exceptions/AppObjectNotFoundException.cs

@@ -19,9 +19,10 @@ namespace Assign2.API.Controllers
     }
 
     [HttpGet]
-    public List<CourseLiteDTO> GetCoursesOnSemester(string semester = null)
+    public IActionResult GetCoursesOnSemester(string semester = null)
     {
-      return _service.GetCoursesBySemester(semester);
+      var result = _service.GetCoursesBySemester(semester);
+      return Ok(result);
       /*
       return new List<CourseLiteDTO>
       {
