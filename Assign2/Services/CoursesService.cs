@@ -41,18 +41,6 @@ namespace Assign2.Services
 
         // Done
         public CourseDetailsDTO GetCourseById(int id){
-
-            List<StudentLiteDTO> students = (
-                                from sl in _db.StudentLinker
-                                join s in _db.Students on sl.StudentID equals s.ID
-                                where sl.CourseID == id
-                                select new StudentLiteDTO {
-                                    SSN = s.SSN,
-                                    Name = s.Name
-                                }
-            ).ToList();
-
-
             var course = (
                     from c in _db.Courses
                     join ct in _db.CoursesTemplate on c.CourseID equals ct.CourseID
@@ -61,7 +49,14 @@ namespace Assign2.Services
                         ID = c.ID,
                         Name = ct.Name,
                         Semester = c.Semester,
-                        StudentList = students
+                        StudentList = (
+                                from sl in _db.StudentLinker
+                                join s in _db.Students on sl.StudentID equals s.ID
+                                where sl.CourseID == id
+                                select new StudentLiteDTO {
+                                    SSN = s.SSN,
+                                    Name = s.Name
+                                }).ToList()
 
                     }).First();
             if (course == null)
@@ -72,7 +67,6 @@ namespace Assign2.Services
         }
 
         // Done
-        // Judge me!
         public void PutCourseById(int Id, string CourseID, string StartDate, string EndDate){
             
             var course = (
@@ -96,19 +90,20 @@ namespace Assign2.Services
             _db.SaveChanges();
         }
 
-        /*public void DeleteCourseById(int Id) {
-            var course = (
+        public void DeleteCourseById(int Id) {
+            Course dcourse = (
                 from c in _db.Courses
                 where c.ID == Id
-                select c ).First();
-            if (course == null)
+                select c).First();
+
+            if (dcourse == null)
             {
                 throw new AppObjectNotFoundException();
             }
 
-            _db.Courses.Deete(course);
+            _db.Courses.Remove(dcourse);
             _db.SaveChanges();
-        }*/
+        }
     
     
     
