@@ -16,8 +16,7 @@ namespace Assign2.Services
             _db = db;
         }
 
-        public List<CourseDetailsDTO> GetCoursesBySemester(string semester)
-        {
+        public List<CourseLiteDTO> GetCoursesBySemester(string semester){
             if (semester == null)
             {
                 semester = "20163";
