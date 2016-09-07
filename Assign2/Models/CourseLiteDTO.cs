@@ -2,7 +2,9 @@
 
 namespace Assign2.Models
 {
-    
+  /// <summary>
+  /// A model for displaying information about courses
+  /// </summary>  
   public class CourseLiteDTO
   {
    public int ID { get; set; } 

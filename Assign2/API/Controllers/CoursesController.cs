@@ -45,6 +45,13 @@ namespace Assign2.API.Controllers
       }
     }
 
+    /// <summary>
+    /// Gets a list of courses by id
+    /// Example: "/api/courses/1"
+    /// returns the course with id 1 
+    /// </summary>
+    /// <param name="id">id of the course</param>
+    /// <returns>200 Ok: The course object with the given id, 404 not found: no course was found with the given id</returns>
     [HttpGet]
     [Route("{id:int}")]
     public IActionResult GetCoursesById(int id) {
@@ -56,6 +63,18 @@ namespace Assign2.API.Controllers
       }
     }
 
+    /// <summary>
+    /// Modifies a course with a given id.
+    /// Example: url: /api/courses/1,
+    /// body:
+    /// {
+    /// "StartDate" : "20/01/2011"  
+    /// }
+    /// modifies the StartDate of course with id 1 to be 20/01/2011
+    /// </summary>
+    /// <param name="id">id of the course to be modified</param>
+    /// <param name="course">the course object to be modified</param>
+    /// <returns>200 ok if the update was succesful, 404 not found if no course with that id could be found</returns>
     [HttpPut]
     [Route("{id:int}")]
     public IActionResult PutCourseById(int id, [FromBody]CourseLiteDTO course)
@@ -71,12 +90,22 @@ namespace Assign2.API.Controllers
       }
     }
 
+    /// <summary>
+    /// Deletes the course with the given id
+    /// </summary>
+    /// <param name="id">id of the course to be deleted</param>
+    /// <returns>200 ok if the course was deleted succesfully, 404 not found if no course was found with the given id</returns>
     [HttpDelete]
     [Route("{id:int}")]
     public IActionResult DeleteCourseById(int id) {
-      _service.DeleteCourseById(id);
+      try
+      {
+        _service.DeleteCourseById(id);
+        return Ok();
+      } catch (AppObjectNotFoundException) {
+        return NotFound("No course was found with that ID");
+      }
 
-      return Ok();
     }
     
     [HttpGet]

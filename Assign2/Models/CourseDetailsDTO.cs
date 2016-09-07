@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 namespace Assign2.Models
 {
-    
+  /// <summary>
+  /// A model for showing detailed information about a course.
+  /// </summary>  
   public class CourseDetailsDTO
   {
    public int ID { get; set; } 
