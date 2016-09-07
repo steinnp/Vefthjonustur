@@ -23,6 +23,10 @@ namespace Assign2.Services
             }
             var courses = _db.Courses;
             var templates = _db.CoursesTemplate;
+            var StudentLinker = _db.StudentLinker;
+            
+            
+            
             var coursesInSemester = 
                 (from c in courses
                 join ct in templates on c.CourseID equals ct.CourseID
@@ -30,8 +34,14 @@ namespace Assign2.Services
                 select new CourseLiteDTO {
                     ID = c.ID,
                     Name = ct.Name,
-                    Semester = c.Semester
+                    Semester = c.Semester,
+                    NumberOfStudents = (
+                        from sl in StudentLinker
+                        where sl.CourseID == c.ID
+                        select sl
+                    ).Count()
                 }).ToList();
+
             if (coursesInSemester.Count() == 0)
             {
                 throw new AppObjectNotFoundException();
