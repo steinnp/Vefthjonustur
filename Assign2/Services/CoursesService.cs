@@ -101,17 +101,17 @@ namespace Assign2.Services
         }
 
         public void DeleteCourseById(int Id) {
-            Course dcourse = (
+            Course course = (
                 from c in _db.Courses
                 where c.ID == Id
                 select c).First();
 
-            if (dcourse == null)
+            if (course == null)
             {
                 throw new AppObjectNotFoundException();
             }
 
-            _db.Courses.Remove(dcourse);
+            _db.Courses.Remove(course);
             _db.SaveChanges();
         }
     

@@ -9,7 +9,7 @@ namespace Assign2.Services
         List<CourseLiteDTO> GetCoursesBySemester(string semester);
         CourseDetailsDTO GetCourseById(int Id);
         void PutCourseById(int Id, string CourseID, string StartDate, string EndDate);
-        //void DeleteCourseById(int Id);
+        void DeleteCourseById(int Id);
     }
 }
 

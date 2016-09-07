@@ -71,19 +71,13 @@ namespace Assign2.API.Controllers
     }
 
 
-    /*[HttpDelete]
+    [HttpDelete]
     [Route("/api/courses/{id:int}")]
     public IActionResult DeleteCourseById(int id) {
-      try
-      {
-        DeleteCourseById(id);
-      }
-      catch (System.Exception)
-      {
-        
-        throw;
-      }
-    }*/
+      _service.DeleteCourseById(id);
+
+      return Ok();
+    }
     
 
 
