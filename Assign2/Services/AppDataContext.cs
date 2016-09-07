@@ -13,6 +13,7 @@ namespace Assign2.Services
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseTemplate> CoursesTemplate { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<StudentLinker> StudentLinker { get; set; }
 
         public AppDataContext(DbContextOptions<AppDataContext> options)
             : base(options)
