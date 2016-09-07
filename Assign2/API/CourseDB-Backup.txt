@@ -1,0 +1,23 @@
+CREATE TABLE "Courses" ( `ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `CourseID` TEXT NOT NULL, `Semester` TEXT NOT NULL, `StartDate` TEXT NOT NULL, `EndDate` TEXT NOT NULL );
+INSERT INTO `Courses` VALUES('1','T-111-PROG','20163','12/08/2016','12/12/2016');
+INSERT INTO `Courses` VALUES('2','T-514-VEFT','20163','12/08/2016','12/12/2016');
+
+CREATE TABLE `CoursesTemplate` ( `ID` INTEGER NOT NULL, `Name` TEXT NOT NULL, `CourseID` TEXT NOT NULL UNIQUE, PRIMARY KEY(`ID`) );
+INSERT INTO `CoursesTemplate` VALUES('1','Web services','T-514-VEFT');
+INSERT INTO `CoursesTemplate` VALUES('2','Programming','T-111-PROG');
+
+CREATE TABLE `Students` ( `ID` INTEGER NOT NULL, `SSN` TEXT NOT NULL UNIQUE, `Name` TEXT NOT NULL, PRIMARY KEY(`ID`) );
+INSERT INTO `Students` VALUES('1','1234567890','Jón Jónsson');
+INSERT INTO `Students` VALUES('2','9876543210','Guðrún Jónsdóttir');
+INSERT INTO `Students` VALUES('3','6543219870','Gunnar Sigurðsson');
+INSERT INTO `Students` VALUES('4','4567891230','Sigmundur Davíð');
+
+CREATE TABLE "StudentsInCourse" ( `CourseID` INTEGER NOT NULL, `StudentID` INTEGER NOT NULL );
+INSERT INTO `StudentsInCourse` VALUES('1','1');
+INSERT INTO `StudentsInCourse` VALUES('1','2');
+INSERT INTO `StudentsInCourse` VALUES('1','3');
+INSERT INTO `StudentsInCourse` VALUES('2','3');
+INSERT INTO `StudentsInCourse` VALUES('2','4');
+
+CREATE TABLE sqlite_sequence(name,seq);
+INSERT INTO `sqlite_sequence` VALUES('Courses','2');
