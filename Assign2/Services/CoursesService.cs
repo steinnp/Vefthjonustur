@@ -114,6 +114,31 @@ namespace Assign2.Services
             _db.Courses.Remove(course);
             _db.SaveChanges();
         }
+
+
+        public List<StudentLiteDTO> GetStudentsByCourseId(int id){
+            
+            if((from c in _db.Courses where c.ID == id select c).FirstOrDefault() == null){
+                // No course return 404
+                throw new AppObjectNotFoundException("No Course With That Id");
+            }
+            var list = (
+                from s in _db.Students
+                join sl in _db.StudentLinker on s.SSN equals sl.StudentID 
+                where sl.CourseID == id
+                select new StudentLiteDTO {
+                    SSN = s.SSN,
+                    Name = s.Name
+                }
+            ).ToList();
+            
+            if (list.Count() <= 0){
+                // No students message
+                throw new AppObjectNotFoundException("No Students In Course");
+            }
+
+            return list;
+        }
     
     
     

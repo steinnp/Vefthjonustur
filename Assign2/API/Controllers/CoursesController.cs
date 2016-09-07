@@ -46,7 +46,7 @@ namespace Assign2.API.Controllers
     }
 
     [HttpGet]
-    [Route("/api/courses/{id:int}")]
+    [Route("{id:int}")]
     public IActionResult GetCoursesById(int id) {
       try {
         return Ok(_service.GetCourseById(id));
@@ -72,11 +72,26 @@ namespace Assign2.API.Controllers
     }
 
     [HttpDelete]
-    [Route("/api/courses/{id:int}")]
+    [Route("{id:int}")]
     public IActionResult DeleteCourseById(int id) {
       _service.DeleteCourseById(id);
 
       return Ok();
     }
+    
+    [HttpGet]
+    [Route("{id:int}/students")]
+    public IActionResult GetStudentsByCourseId(int id){
+      try
+      {
+        return Ok(_service.GetStudentsByCourseId(id));
+      }
+      catch (System.Exception e)
+      {
+        return NotFound(e.Message);
+      }
+    }
+  
+  
   }
 }
