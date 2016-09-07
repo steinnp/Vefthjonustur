@@ -2,6 +2,9 @@ using System;
 
 namespace Assign2.Models
 {
+    /// <summary>
+    /// A model for displaying information about a student
+    /// </summary>
     public class StudentLiteDTO
     {
         public string SSN { get; set; }
