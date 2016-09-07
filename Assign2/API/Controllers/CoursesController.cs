@@ -44,5 +44,34 @@ namespace Assign2.API.Controllers
         return NotFound("No courses were found for the specified semester");
       }
     }
+
+    [HttpGet]
+    [Route("/api/courses/{id:int}")]
+    public IActionResult GetCoursesById(int id) {
+      try {
+        return Ok(_service.GetCourseById(id));
+      }
+      catch (AppObjectNotFoundException) {
+        return NotFound("No course was found with that ID");
+      }
+    }
+
+    [HttpPut]
+    [Route("/api/courses/{id:int}")]
+    public IActionResult PutCourseById(int id) {
+      try
+      {
+        _service.PutCourseById(id, Request.Form["CourseID"], Request.Form["Semester"], Request.Form["StartDate"], Request.Form["EndDate"]);
+        return Ok();
+      }
+      catch (System.Exception)
+      {
+        return NotFound();
+      }
+    }
+
+    
+
+
   }
 }
