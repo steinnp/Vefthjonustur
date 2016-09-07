@@ -57,19 +57,19 @@ namespace Assign2.API.Controllers
     }
 
     [HttpPut]
-    [Route("/api/courses/{id:int}")]
-    public IActionResult PutCourseById(int id) {
+    [Route("{id:int}")]
+    public IActionResult PutCourseById(int id, [FromBody]CourseLiteDTO course)
+    {
       try
       {
-        _service.PutCourseById(id, Request.Form["CourseID"], Request.Form["StartDate"], Request.Form["EndDate"]);
+        _service.PutCourseById(id, course.StartDate, course.EndDate);
         return Ok();
       }
-      catch (System.Exception)
+      catch (AppObjectNotFoundException)
       {
-        return NotFound();
+        return NotFound("No course was found with that ID");
       }
     }
-
 
     [HttpDelete]
     [Route("/api/courses/{id:int}")]
@@ -78,8 +78,5 @@ namespace Assign2.API.Controllers
 
       return Ok();
     }
-    
-
-
   }
 }

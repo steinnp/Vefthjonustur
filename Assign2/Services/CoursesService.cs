@@ -61,14 +61,14 @@ namespace Assign2.Services
                         Semester = c.Semester,
                         StudentList = (
                                 from sl in _db.StudentLinker
-                                join s in _db.Students on sl.StudentID equals s.ID
+                                join s in _db.Students on sl.StudentID equals s.SSN
                                 where sl.CourseID == id
                                 select new StudentLiteDTO {
                                     SSN = s.SSN,
                                     Name = s.Name
                                 }).ToList()
 
-                    }).First();
+                    }).SingleOrDefault();
             if (course == null)
             {
                 throw new AppObjectNotFoundException();
@@ -77,13 +77,13 @@ namespace Assign2.Services
         }
 
         // Done
-        public void PutCourseById(int Id, string CourseID, string StartDate, string EndDate){
+        public void PutCourseById(int id, string StartDate = null, string EndDate = null){
             
             var course = (
                         from c in _db.Courses
-                        where c.ID == Id
+                        where c.ID == id
                         select c
-                        ).First();
+                        ).SingleOrDefault();
 
             if (course == null)
             {
@@ -104,7 +104,7 @@ namespace Assign2.Services
             Course course = (
                 from c in _db.Courses
                 where c.ID == Id
-                select c).First();
+                select c).SingleOrDefault();
 
             if (course == null)
             {
