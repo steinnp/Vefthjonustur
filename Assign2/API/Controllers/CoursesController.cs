@@ -61,7 +61,7 @@ namespace Assign2.API.Controllers
     public IActionResult PutCourseById(int id) {
       try
       {
-        _service.PutCourseById(id, Request.Form["CourseID"], Request.Form["Semester"], Request.Form["StartDate"], Request.Form["EndDate"]);
+        _service.PutCourseById(id, Request.Form["CourseID"], Request.Form["StartDate"], Request.Form["EndDate"]);
         return Ok();
       }
       catch (System.Exception)
@@ -70,6 +70,20 @@ namespace Assign2.API.Controllers
       }
     }
 
+
+    /*[HttpDelete]
+    [Route("/api/courses/{id:int}")]
+    public IActionResult DeleteCourseById(int id) {
+      try
+      {
+        DeleteCourseById(id);
+      }
+      catch (System.Exception)
+      {
+        
+        throw;
+      }
+    }*/
     
 
 
