@@ -46,28 +46,6 @@ namespace Assign2.API.Controllers
     }
 
     /// <summary>
-    /// Adds a student to a course 
-    /// Example: url: /api/courses/1/students
-    /// body: { "SSN": "1234567890" }
-    /// adds student with ssn 1234567890 to course with id 1 
-    /// </summary>
-    /// <param name="courseID">The id of the course</param>
-    /// <param name="student">contains the ssn of the student</param>
-    /// <returns>200 ok if the student was succesfully added, 404 not found if no student can be found with that ssn or no course can be found with that id</returns>
-    [HttpPost]
-    [Route("{courseID:int}/students")]
-    public IActionResult AddStudentToCourse(int courseID, [FromBody]StudentLiteDTO student)
-    {
-      try
-      {
-        var route = _service.AddStudentToCourse(courseID, student.SSN);
-        return Ok();
-      } catch (AppObjectNotFoundException e){
-        return NotFound(e.message);
-      }
-    }
-
-    /// <summary>
     /// Gets a list of courses by id
     /// Example: "/api/courses/1"
     /// returns the course with id 1 
@@ -75,7 +53,7 @@ namespace Assign2.API.Controllers
     /// <param name="id">id of the course</param>
     /// <returns>200 Ok: The course object with the given id, 404 not found: no course was found with the given id</returns>
     [HttpGet]
-    [Route("/api/courses/{id:int}")]
+    [Route("{id:int}")]
     public IActionResult GetCoursesById(int id) {
       try {
         return Ok(_service.GetCourseById(id));
@@ -118,7 +96,7 @@ namespace Assign2.API.Controllers
     /// <param name="id">id of the course to be deleted</param>
     /// <returns>200 ok if the course was deleted succesfully, 404 not found if no course was found with the given id</returns>
     [HttpDelete]
-    [Route("/api/courses/{id:int}")]
+    [Route("{id:int}")]
     public IActionResult DeleteCourseById(int id) {
       try
       {
@@ -129,5 +107,42 @@ namespace Assign2.API.Controllers
       }
 
     }
+    
+    /// <summary>
+    /// Adds a student to a course 
+    /// Example: url: /api/courses/1/students
+    /// body: { "SSN": "1234567890" }
+    /// adds student with ssn 1234567890 to course with id 1 
+    /// </summary>
+    /// <param name="courseID">The id of the course</param>
+    /// <param name="student">contains the ssn of the student</param>
+    /// <returns>200 ok if the student was succesfully added, 404 not found if no student can be found with that ssn or no course can be found with that id</returns>
+    [HttpPost]
+    [Route("{courseID:int}/students")]
+    public IActionResult AddStudentToCourse(int courseID, [FromBody]StudentLiteDTO student)
+    {
+      try
+      {
+        _service.AddStudentToCourse(courseID, student.SSN);
+        return Ok();
+      } catch (AppObjectNotFoundException e){
+        return NotFound(e.message);
+      }
+    }
+
+    [HttpGet]
+    [Route("{id:int}/students")]
+    public IActionResult GetStudentsByCourseId(int id){
+      try
+      {
+        return Ok(_service.GetStudentsByCourseId(id));
+      }
+      catch (AppObjectNotFoundException e)
+      {
+        return NotFound(e.message);
+      }
+    }
+  
+  
   }
 }

@@ -16,29 +16,6 @@ namespace Assign2.Services
             _db = db;
         }
 
-        public string AddStudentToCourse(int courseID, string ssn = null)
-        {
-            if (ssn == null)
-            {
-                throw new AppObjectNotFoundException("No student was found with that ssn");
-            }
-            var course = (from c in _db.Courses
-                          where c.ID == courseID
-                          select c).SingleOrDefault();
-            if (course == null)
-            {
-                throw new AppObjectNotFoundException("No course was found with that ID");
-            }
-            var student = (from s in _db.Students
-                           where s.SSN == ssn
-                           select s).SingleOrDefault();
-            if (student == null)
-            {
-                throw new AppObjectNotFoundException("No student was found with that ssn");
-            }
-            return "";
-        }
-
         public List<CourseLiteDTO> GetCoursesBySemester(string semester)
         {
             if (semester == null)
@@ -142,5 +119,53 @@ namespace Assign2.Services
             _db.Courses.Remove(course);
             _db.SaveChanges();
         }
+
+        public void AddStudentToCourse(int courseID, string ssn = null)
+        {
+            if (ssn == null)
+            {
+                throw new AppObjectNotFoundException("No student was found with that ssn");
+            }
+            var course = (from c in _db.Courses
+                          where c.ID == courseID
+                          select c).SingleOrDefault();
+            if (course == null)
+            {
+                throw new AppObjectNotFoundException("No course was found with that ID");
+            }
+            var student = (from s in _db.Students
+                           where s.SSN == ssn
+                           select s).SingleOrDefault();
+            if (student == null)
+            {
+                throw new AppObjectNotFoundException("No student was found with that ssn");
+            }
+            return;
+        }
+
+        public List<StudentLiteDTO> GetStudentsByCourseId(int id){
+            
+            if((from c in _db.Courses where c.ID == id select c).FirstOrDefault() == null){
+                // No course return 404
+                throw new AppObjectNotFoundException("No Course With That Id");
+            }
+            var list = (
+                from s in _db.Students
+                join sl in _db.StudentLinker on s.SSN equals sl.StudentID 
+                where sl.CourseID == id
+                select new StudentLiteDTO {
+                    SSN = s.SSN,
+                    Name = s.Name
+                }
+            ).ToList();
+            
+            if (list.Count() <= 0){
+                // No students message
+                throw new AppObjectNotFoundException("No Students In Course");
+            }
+
+            return list;
+        }
+    
     }
 }
