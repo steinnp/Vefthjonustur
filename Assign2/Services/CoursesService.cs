@@ -39,7 +39,9 @@ namespace Assign2.Services
                         from sl in StudentLinker
                         where sl.CourseID == c.ID
                         select sl
-                    ).Count()
+                    ).Count(),
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate
                 }).ToList();
 
             if (coursesInSemester.Count() == 0)
@@ -59,6 +61,8 @@ namespace Assign2.Services
                         ID = c.ID,
                         Name = ct.Name,
                         Semester = c.Semester,
+                        StartDate = c.StartDate,
+                        EndDate = c.EndDate,
                         StudentList = (
                                 from sl in _db.StudentLinker
                                 join s in _db.Students on sl.StudentID equals s.SSN
@@ -114,8 +118,5 @@ namespace Assign2.Services
             _db.Courses.Remove(course);
             _db.SaveChanges();
         }
-    
-    
-    
     }
 }

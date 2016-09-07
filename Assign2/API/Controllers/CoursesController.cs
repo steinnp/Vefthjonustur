@@ -74,9 +74,14 @@ namespace Assign2.API.Controllers
     [HttpDelete]
     [Route("/api/courses/{id:int}")]
     public IActionResult DeleteCourseById(int id) {
-      _service.DeleteCourseById(id);
+      try
+      {
+        _service.DeleteCourseById(id);
+        return Ok();
+      } catch (AppObjectNotFoundException) {
+        return NotFound("No course was found with that ID");
+      }
 
-      return Ok();
     }
   }
 }
