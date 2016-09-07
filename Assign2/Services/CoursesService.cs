@@ -16,7 +16,31 @@ namespace Assign2.Services
             _db = db;
         }
 
-        public List<CourseLiteDTO> GetCoursesBySemester(string semester){
+        public string AddStudentToCourse(int courseID, string ssn = null)
+        {
+            if (ssn == null)
+            {
+                throw new AppObjectNotFoundException("No student was found with that ssn");
+            }
+            var course = (from c in _db.Courses
+                          where c.ID == courseID
+                          select c).SingleOrDefault();
+            if (course == null)
+            {
+                throw new AppObjectNotFoundException("No course was found with that ID");
+            }
+            var student = (from s in _db.Students
+                           where s.SSN == ssn
+                           select s).SingleOrDefault();
+            if (student == null)
+            {
+                throw new AppObjectNotFoundException("No student was found with that ssn");
+            }
+            return "";
+        }
+
+        public List<CourseLiteDTO> GetCoursesBySemester(string semester)
+        {
             if (semester == null)
             {
                 semester = "20163";
