@@ -55,12 +55,6 @@ namespace Assign3.Services
             if (studentLink != null) {
                 throw new InvalidParametersException("This student is already enrolled in the course");
             }
-            var waitingLink = (from c in _db.WaitingList
-                               where c.StudentID == ssn && c.CourseID == courseID
-                               select c).SingleOrDefault();
-            if (waitingLink != null) {
-                throw new InvalidParametersException("This student is already in the waiting list for the course");
-            }
         }
         private bool CourseIsFull(int courseID)
         {
@@ -216,29 +210,52 @@ namespace Assign3.Services
             _db.Courses.Remove(course);
             _db.SaveChanges();
         }
+
         public CreateStudentDTO AddStudentToCourse(int courseID, string ssn = null)
         {
             GetCourse(courseID);
             Student student = GetStudent(ssn);
             CourseStudentLinkExistsThrower(courseID, ssn);
             if (CourseIsFull(courseID)) {
-                var studentLink = new WaitingList {
-                    CourseID = courseID,
-                    StudentID = ssn
-                };
-                _db.WaitingList.Add(studentLink);
-                _db.SaveChanges();
-                return new CreateStudentDTO {Name = student.Name, CourseID = courseID, Queued = true};
+                throw new InvalidParametersException();
             } else {
                 var studentLink = new StudentLinker {
                     CourseID = courseID,
                     StudentID = ssn,
                     IsActive = 1
                 };
+                var waitingLink = (from c in _db.WaitingList
+                                   where c.StudentID == ssn && c.CourseID == courseID
+                                   select c).SingleOrDefault();
+                bool queued = false;
+                if (waitingLink != null) {
+                    queued = true;
+                    _db.WaitingList.Remove(waitingLink);
+                }
                 _db.StudentLinker.Add(studentLink);
                 _db.SaveChanges();
-                return new CreateStudentDTO {Name = student.Name, CourseID = courseID, Queued = false};
+                return new CreateStudentDTO {Name = student.Name, CourseID = courseID, Queued = queued};
             }
+        }
+
+        public void AddStudentToWaitingList(int courseID, string ssn = null)
+        {
+            CourseStudentLinkExistsThrower(courseID, ssn);
+            GetCourse(courseID);
+            GetStudent(ssn);
+            var waitingLink = (from c in _db.WaitingList
+                               where c.StudentID == ssn && c.CourseID == courseID
+                               select c).SingleOrDefault();
+            if (waitingLink != null) {
+                throw new InvalidParametersException("This student is already in the waiting list for the course");
+            }
+            var newLink = new WaitingList {
+                CourseID = courseID,
+                StudentID = ssn,
+            };
+            _db.WaitingList.Add(newLink);
+            _db.SaveChanges();
+
         }
 
         public void DeleteStudentFromCourse(int courseID, string ssn = null)

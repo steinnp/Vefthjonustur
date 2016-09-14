@@ -169,8 +169,7 @@ namespace Assign3.API.Controllers
           var location = Url.Link("GetStudentsByCourseId", new { id = newStudent.CourseID });
           return Created(location, newStudent.Name + " is now enrolled in the course.");
         } else {
-          var location = Url.Link("GetStudentsWaitingByCourseId", new { id = newStudent.CourseID });
-          return Created(location, newStudent.Name + " has been added to the course waiting list");
+          return Ok();
         }
       } catch (AppObjectNotFoundException e){
         return NotFound(e.Message);
@@ -195,14 +194,8 @@ namespace Assign3.API.Controllers
     {
       try
       {
-        var newStudent = _service.AddStudentToCourse(courseID, student.SSN);
-        if (newStudent.Queued == false) {
-          var location = Url.Link("GetStudentsByCourseId", new { id = newStudent.CourseID });
-          return Created(location, newStudent.Name + " is now enrolled in the course.");
-        } else {
-          var location = Url.Link("GetStudentsWaitingByCourseId", new { id = newStudent.CourseID });
-          return Created(location, newStudent.Name + " has been added to the course waiting list");
-        }
+        _service.AddStudentToWaitingList(courseID, student.SSN);
+        return Ok();
       } catch (AppObjectNotFoundException e){
         return NotFound(e.Message);
       } catch (InvalidParametersException) {

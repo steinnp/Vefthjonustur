@@ -7,6 +7,7 @@ namespace Assign3.Services
     public interface ICoursesService
     {
         CreateStudentDTO AddStudentToCourse(int courseID, string ssn);
+        void AddStudentToWaitingList(int courseID, string ssn);
         List<CourseLiteDTO> GetCoursesBySemester(string semester);
         CourseDetailsDTO GetCourseById(int Id);
         CourseDetailsDTO CreateCourse(CreateCourseDTO course);
