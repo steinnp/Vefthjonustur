@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Assign2.Models
+namespace Assign3.Models
 {
   /// <summary>
   /// A model for showing detailed information about a course.

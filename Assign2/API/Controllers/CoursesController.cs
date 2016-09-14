@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Assign2.Models;
-using Assign2.Services;
-using Assign2.Services.Exceptions;
+using Assign3.Models;
+using Assign3.Services;
+using Assign3.Services.Exceptions;
 
-namespace Assign2.API.Controllers
+namespace Assign3.API.Controllers
 {
   [Route("api/courses")]
   public class CoursesController : Controller

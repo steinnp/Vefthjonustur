@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Assign2.Models;
-using Assign2.Services.Entities;
-using Assign2.Services.Exceptions;
+using Assign3.Models;
+using Assign3.Services.Entities;
+using Assign3.Services.Exceptions;
 
-namespace Assign2.Services
+namespace Assign3.Services
 {
     public class CoursesService : ICoursesService
     {

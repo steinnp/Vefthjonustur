@@ -1,6 +1,6 @@
 using System;
 
-namespace Assign2.Services.Exceptions
+namespace Assign3.Services.Exceptions
 {
     public class AppObjectNotFoundException : Exception
     {

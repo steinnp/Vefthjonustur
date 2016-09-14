@@ -1,4 +1,4 @@
-namespace Assign2.Services.Entities
+namespace Assign3.Services.Entities
 {
     public class StudentLinker
     {

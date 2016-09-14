@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-using Assign2.Services.Entities;
+using Assign3.Services.Entities;
 
-namespace Assign2.Services
+namespace Assign3.Services
 {
     public class AppDataContext : DbContext
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Assign2.Models;
+using Assign3.Models;
 
-namespace Assign2.Services
+namespace Assign3.Services
 {
     public interface ICoursesService
     {
