@@ -15,7 +15,7 @@ namespace CoursesAPI.Services.Services
 		private readonly IRepository<TeacherRegistration> _teacherRegistrations;
 		private readonly IRepository<CourseTemplate> _courseTemplates; 
 		private readonly IRepository<Person> _persons;
-
+ 
 		public CoursesServiceProvider(IUnitOfWork uow)
 		{
 			_uow = uow;
@@ -62,6 +62,27 @@ namespace CoursesAPI.Services.Services
 					CourseInstanceID   = c.ID,
 					MainTeacher        = "" // Hint: it should not always return an empty string!
 				}).ToList();
+
+			foreach (var course in courses)
+			{
+				var teacherSSN = (from t in _teacherRegistrations.All()
+					where t.CourseInstanceID == course.CourseInstanceID &&
+					t.Type == TeacherType.MainTeacher
+					select t.SSN
+				).SingleOrDefault();
+				if (teacherSSN != null)
+				{
+					var teacherName = (from n in _persons.All()
+					where n.SSN == teacherSSN
+					select n.Name
+					).SingleOrDefault();
+					if (teacherName != null)
+					{
+						course.MainTeacher = teacherName;
+					}
+
+				}	
+			}	
 
 			return courses;
 		}

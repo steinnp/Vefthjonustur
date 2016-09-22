@@ -21,9 +21,13 @@ namespace CoursesAPI.Tests.Services
 		private const string INVALID_SSN = "9876543210";
 
 		private const string NAME_GUNNA  = "Guðrún Guðmundsdóttir";
+		private const string NAME_DABS = "Daníel B. Sigurgeirsson";
 
 		private const int COURSEID_VEFT_20153 = 1337;
 		private const int COURSEID_VEFT_20163 = 1338;
+		private const int COURSEID_FORR_20163 = 1339;
+		private const int COURSEID_VEFT_20183 = 1340;
+		private const int COURSEID_FORR_20183 = 1341;
 		private const int INVALID_COURSEID    = 9999;
 
 		public CourseServicesTests()
@@ -38,7 +42,7 @@ namespace CoursesAPI.Tests.Services
 				new Person
 				{
 					ID    = 1,
-					Name  = "Daníel B. Sigurgeirsson",
+					Name  = NAME_DABS,
 					SSN   = SSN_DABS,
 					Email = "dabs@ru.is"
 				},
@@ -61,6 +65,12 @@ namespace CoursesAPI.Tests.Services
 					CourseID    = "T-514-VEFT",
 					Description = "Í þessum áfanga verður fjallað um vefþj...",
 					Name        = "Vefþjónustur"
+				},
+				new CourseTemplate
+				{
+					CourseID    = "T-101-FORR",
+					Description = "Í þessum áfanga verður fjallað um forr...",
+					Name        = "Forritun"
 				}
 			};
 			#endregion
@@ -79,6 +89,24 @@ namespace CoursesAPI.Tests.Services
 					ID         = COURSEID_VEFT_20163,
 					CourseID   = "T-514-VEFT",
 					SemesterID = "20163"
+				},
+				new CourseInstance
+				{
+					ID         = COURSEID_FORR_20163,
+					CourseID   = "T-101-FORR",
+					SemesterID = "20163"
+				},
+				new CourseInstance
+				{
+					ID         = COURSEID_VEFT_20183,
+					CourseID   = "T-514-VEFT",
+					SemesterID = "20183"
+				},
+				new CourseInstance
+				{
+					ID         = COURSEID_FORR_20183,
+					CourseID   = "T-101-FORR",
+					SemesterID = "20183"
 				}
 			};
 			#endregion
@@ -92,7 +120,21 @@ namespace CoursesAPI.Tests.Services
 					CourseInstanceID = COURSEID_VEFT_20153,
 					SSN              = SSN_DABS,
 					Type             = TeacherType.MainTeacher
-				}
+				},
+				new TeacherRegistration
+				{
+					ID               = 102,
+					CourseInstanceID = COURSEID_VEFT_20183,
+					SSN              = SSN_DABS,
+					Type             = TeacherType.MainTeacher
+				},
+				new TeacherRegistration
+				{
+					ID               = 103,
+					CourseInstanceID = COURSEID_FORR_20183,
+					SSN              = SSN_GUNNA,
+					Type             = TeacherType.MainTeacher
+				},
 			};
 			#endregion
 
@@ -114,18 +156,58 @@ namespace CoursesAPI.Tests.Services
 		[Fact]
 		public void GetCoursesBySemester_ReturnsEmptyListWhenNoDataDefined()
 		{
-			// Arrange:
-
-			// Act:
-
+			MockUnitOfWork<MockDataContext> emptyMockUnitOfWork = new MockUnitOfWork<MockDataContext>();
+			CoursesServiceProvider emptyService = new CoursesServiceProvider(emptyMockUnitOfWork);
+			List<CourseInstanceDTO> result = emptyService.GetCourseInstancesBySemester();
 			// Assert:
-			// Assert.True(true);
+			Assert.True(result.Count() == 0);
 		}
 
-		// TODO!!! you should write more unit tests here!!!
+		[Fact]
+		void GetCoursesBySemester_ReturnsAllCoursesOnSemester()
+		{
+			List<CourseInstanceDTO> result20153 = _service.GetCourseInstancesBySemester("20153");
+			List<CourseInstanceDTO> result20163 = _service.GetCourseInstancesBySemester("20163");
+			List<CourseInstanceDTO> result20173 = _service.GetCourseInstancesBySemester("20173");
+			Assert.True(result20153.Count() == 1);
+			Assert.True(result20153.Any(course => course.TemplateID == "T-514-VEFT"));
+			Assert.True(result20163.Count() == 2);
+			Assert.True(result20163.Any(course => course.TemplateID == "T-514-VEFT"));
+			Assert.True(result20163.Any(course => course.TemplateID == "T-101-FORR"));
+			Assert.True(result20173.Count() == 0);
+
+		}
+
+		[Fact]
+		void GetCourseInstancesBySemester_ReturnsAllCoursesForUnspecifiedSemester()
+		{
+			List<CourseInstanceDTO> result = _service.GetCourseInstancesBySemester();
+			Assert.True(result.Count() == 1);
+			Assert.True(result.Any(course => course.TemplateID == "T-514-VEFT"));
+		}
+
+		[Fact]
+		void GetCourseInstancesBySemester_ReturnsEmptyStringForNoMainTeacher()
+		{
+			List<CourseInstanceDTO> result = _service.GetCourseInstancesBySemester("20163");
+			CourseInstanceDTO noMainTeacher = result.SingleOrDefault(course => course.TemplateID == "T-101-FORR");
+			Assert.True(noMainTeacher.MainTeacher == "");
+		}
+
+		[Fact]
+		void GetCourseInstancesBySemester_ReturnsMainTeacherNameIfDefined()
+		{
+			List<CourseInstanceDTO> result20153 = _service.GetCourseInstancesBySemester("20153");
+			CourseInstanceDTO MainTeacher20153 = result20153.SingleOrDefault(course => course.TemplateID == "T-514-VEFT");
+			Assert.True(MainTeacher20153.MainTeacher == NAME_DABS);
+			List<CourseInstanceDTO> result20183 = _service.GetCourseInstancesBySemester("20183");
+			CourseInstanceDTO MainTeacher20183VEFT = result20183.SingleOrDefault(course => course.TemplateID == "T-514-VEFT");
+			Assert.True(MainTeacher20183VEFT.MainTeacher == NAME_DABS);
+			CourseInstanceDTO MainTeacher20183FORR = result20183.SingleOrDefault(course => course.TemplateID == "T-101-FORR");
+			Assert.True(MainTeacher20183FORR.MainTeacher == NAME_GUNNA);
+		}
 
 		#endregion
-
 		#region AddTeacher
 
 		/// <summary>
