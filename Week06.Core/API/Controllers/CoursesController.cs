@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using System;
 using CoursesAPI.Models;
 using CoursesAPI.Services.DataAccess;
 using CoursesAPI.Services.Services;
@@ -20,9 +20,10 @@ namespace CoursesAPI.Controllers
 		[HttpGet]
 		public IActionResult GetCoursesBySemester(string semester = null, int page = 1)
 		{
+			string language = Request.Headers["Accept-Language"];
 			try
 			{
-				return Ok(_service.GetCourseInstancesBySemester(semester, page));
+				return Ok(_service.GetCourseInstancesBySemester(semester, page, language));
 			}
 			catch (AppObjectNotFoundException)
 			{

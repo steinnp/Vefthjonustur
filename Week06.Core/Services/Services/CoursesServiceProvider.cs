@@ -45,7 +45,7 @@ namespace CoursesAPI.Services.Services
 		/// </summary>
 		/// <param name="semester"></param>
 		/// <returns></returns>
-		public GetCourseInstancesBySemesterViewModel GetCourseInstancesBySemester(string semester = null, int page = 1)
+		public GetCourseInstancesBySemesterViewModel GetCourseInstancesBySemester(string semester = null, int page = 1, string language = null)
 		{
 			if (string.IsNullOrEmpty(semester))
 			{
@@ -57,16 +57,32 @@ namespace CoursesAPI.Services.Services
 
 			if ((page -1) * 10 < coursesCount)
 			{
-			var courses = (from c in _courseInstances.All()
-				join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
-				where c.SemesterID == semester
-				select new CourseInstanceDTO
+				List<CourseInstanceDTO> courses;
+				if (language == "is-IS" || language == "is")
 				{
-					Name               = ct.Name,
-					TemplateID         = ct.CourseID,
-					CourseInstanceID   = c.ID,
-					MainTeacher        = "" // Hint: it should not always return an empty string!
-				}).Skip((page - 1) * 10).Take(10).ToList();
+			    	courses = (from c in _courseInstances.All()
+					join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
+					where c.SemesterID == semester
+					select new CourseInstanceDTO
+					{
+						Name               = ct.Name,
+						TemplateID         = ct.CourseID,
+						CourseInstanceID   = c.ID,
+						MainTeacher        = "" // Hint: it should not always return an empty string!
+					}).Skip((page - 1) * 10).Take(10).ToList();
+				} else {
+			    	courses = (from c in _courseInstances.All()
+					join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
+					where c.SemesterID == semester
+					select new CourseInstanceDTO
+					{
+						Name               = ct.NameEN,
+						TemplateID         = ct.CourseID,
+						CourseInstanceID   = c.ID,
+						MainTeacher        = "" // Hint: it should not always return an empty string!
+					}).Skip((page - 1) * 10).Take(10).ToList();
+
+				}
 
 			foreach (var course in courses)
 			{
